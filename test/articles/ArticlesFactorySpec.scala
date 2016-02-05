@@ -5,7 +5,7 @@ import org.junit.runner._
 import play.api.test._
 import play.api.test.Helpers._
 
-import domain.articles.factory.ArticlesFactory
+import domain.factories.ArticlesFactory
 
 /**
  * Add your spec here.
