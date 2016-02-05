@@ -18,7 +18,7 @@ class ArticlesControllerSpec extends Specification { override def is = s2"""
     The Articles controller should
         require authentication on all available routes  $authentication
         create articles                                 $creation
-                                    """
+        """
 
     def authentication = new WithApplication {
         val requests = Array(
