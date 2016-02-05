@@ -11,14 +11,20 @@ import play.api.test.Helpers._
  * For more information, consult the wiki.
  */
 @RunWith(classOf[JUnitRunner])
-class ArticlesSpec extends Specification {
-  lazy private val headers = "Authorization" -> play.Play.application.configuration.getString("authentication.key")
+class ArticlesControllerSpec extends Specification { override def is = s2"""
+    The Articles controller should
+        require authentication on all available routes      $e1
 
-  "Articles" should {
+                                    """
 
-    "require authentication" in new WithApplication{
-      route(FakeRequest(GET, "/articles")) must beSome.which (status(_) == UNAUTHORIZED)
-      route(FakeRequest(GET, "/articles").withHeaders(headers)) must beSome.which (status(_) == OK)
+    lazy private val headers = "Authorization" -> play.Play.application.configuration.getString("authentication.key")
+
+    def e1 = new WithApplication {
+        val requests = Array((GET, "/articles"))
+
+        for (request <- requests) {
+            route(FakeRequest(request._1, request._2)) must beSome.which (status(_) == UNAUTHORIZED)
+            route(FakeRequest(request._1, request._2).withHeaders(headers)) must beSome.which (status(_) == OK)
+        }
     }
-  }
 }
