@@ -6,7 +6,7 @@
 GET     /                           controllers.Application.index
 
 GET     /articles                   controllers.Articles.index
-#POST    /articles                   controllers.Articles.create
+POST    /articles                   controllers.Articles.create
 
 #GET     /articles/:id               controllers.Articles.get(id: Long)
 #PUT     /articles/:id               controllers.Articles.update(id: Long)

@@ -2,6 +2,7 @@ package controllers
 
 import play.api._
 import play.api.mvc._
+import play.api.libs.json._
 
 import actions.Authenticated
 
@@ -10,11 +11,14 @@ class Articles extends Controller {
         Ok("list articles")
     }
 
-    /*
     def create = Authenticated {
-        Ok("create article")
+        // use article factory to create new article
+        // add it to article repository
+        // return it
+        Ok(Json.obj("content" -> "The Content", "title" -> "The Title"))
     }
 
+    /*
     def get(id: Long) = Authenticated {
         Ok("get article " + id)
     }

@@ -5,6 +5,7 @@ import org.junit.runner._
 import play.api.test._
 import play.api.test.Helpers._
 import play.api.mvc._
+import play.api.libs.json._
 import scala.concurrent.Future
 
 /**
@@ -15,24 +16,39 @@ import scala.concurrent.Future
 @RunWith(classOf[JUnitRunner])
 class ArticlesControllerSpec extends Specification { override def is = s2"""
     The Articles controller should
-        require authentication on all available routes      $e1
+        require authentication on all available routes  $authentication
+        create articles                                 $creation
                                     """
 
-    def e1 = new WithApplication {
-        val requests = Array((GET, "/articles"))
+    def authentication = new WithApplication {
+        val requests = Array(
+                (GET, "/articles"),
+                (POST, "/articles")
+            )
 
         for (request <- requests) {
-            unauthenticatedRequest(request) must beSome.which (status(_) == UNAUTHORIZED)
-            authenticatedRequest(request) must beSome.which (status(_) == OK)
+            status(unauthenticatedRequest(request._1, request._2)) must equalTo (UNAUTHORIZED)
         }
     }
 
-    def unauthenticatedRequest(request : (String, String)) : Option[Future[play.api.mvc.Result]] = {
-        return route(FakeRequest(request._1, request._2))
+    def creation = new WithApplication {
+        val result = authenticatedRequest(POST, "/articles", Json.obj("title" -> "The Title", "content" -> "The Content"))
+        val json = Json.parse(contentAsString(result))
+
+        status(result) must equalTo (OK)
+        (json \ "title").as[String] must equalTo("The Title")
+        (json \ "content").as[String] must equalTo("The Content")
     }
 
-    def authenticatedRequest(request : (String, String)) : Option[Future[play.api.mvc.Result]] = {
-        val headers = "Authorization" -> play.Play.application.configuration.getString("authentication.key")
-        return route(FakeRequest(request._1, request._2).withHeaders(headers))
+    private def unauthenticatedRequest(method : String, uri : String) : Future[play.api.mvc.Result] = {
+        val Some(result) = route(FakeRequest(method, uri))
+        return result
+    }
+
+    private def authenticatedRequest(method : String, uri : String, body: JsValue = Json.obj()) : Future[play.api.mvc.Result] = {
+        val Some(result) = route(FakeRequest(method, uri)
+                .withHeaders("Authorization" -> play.Play.application.configuration.getString("authentication.key"))
+                .withJsonBody(body))
+        return result
     }
 }
