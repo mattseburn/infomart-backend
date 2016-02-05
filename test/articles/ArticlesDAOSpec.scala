@@ -5,7 +5,7 @@ import org.junit.runner._
 import play.api.test._
 import play.api.test.Helpers._
 
-import domain.factories.ArticlesFactory
+import daos.ArticlesDAO
 
 /**
  * Add your spec here.
@@ -13,13 +13,12 @@ import domain.factories.ArticlesFactory
  * For more information, consult the wiki.
  */
 @RunWith(classOf[JUnitRunner])
-class ArticlesFactorySpec extends Specification { override def is = s2"""
-    The Articles factory should
+class ArticlesDAOSpec extends Specification { override def is = s2"""
+    The Articles DAO should
         create a new article        $create
         """
 
     def create = new WithApplication {
-        val articlesFactory = new ArticlesFactory()
     }
 
 }
