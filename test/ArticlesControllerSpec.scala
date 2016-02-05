@@ -4,6 +4,8 @@ import org.junit.runner._
 
 import play.api.test._
 import play.api.test.Helpers._
+import play.api.mvc._
+import scala.concurrent.Future
 
 /**
  * Add your spec here.
@@ -14,17 +16,23 @@ import play.api.test.Helpers._
 class ArticlesControllerSpec extends Specification { override def is = s2"""
     The Articles controller should
         require authentication on all available routes      $e1
-
                                     """
-
-    lazy private val headers = "Authorization" -> play.Play.application.configuration.getString("authentication.key")
 
     def e1 = new WithApplication {
         val requests = Array((GET, "/articles"))
 
         for (request <- requests) {
-            route(FakeRequest(request._1, request._2)) must beSome.which (status(_) == UNAUTHORIZED)
-            route(FakeRequest(request._1, request._2).withHeaders(headers)) must beSome.which (status(_) == OK)
+            unauthenticatedRequest(request) must beSome.which (status(_) == UNAUTHORIZED)
+            authenticatedRequest(request) must beSome.which (status(_) == OK)
         }
+    }
+
+    def unauthenticatedRequest(request : (String, String)) : Option[Future[play.api.mvc.Result]] = {
+        return route(FakeRequest(request._1, request._2))
+    }
+
+    def authenticatedRequest(request : (String, String)) : Option[Future[play.api.mvc.Result]] = {
+        val headers = "Authorization" -> play.Play.application.configuration.getString("authentication.key")
+        return route(FakeRequest(request._1, request._2).withHeaders(headers))
     }
 }
