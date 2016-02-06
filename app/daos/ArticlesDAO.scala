@@ -10,7 +10,6 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.Play.current
 
 class ArticlesDAO() extends DAO[ArticleEntity] {
-    val db = DB.getConnection()
     val table: String = "articles"
 
     def save(article: ArticleEntity): Future[Option[Long]] = Future {
