@@ -44,11 +44,11 @@ class ArticlesControllerSpec extends Specification { override def is = s2"""
         }
     }
 
-    private def unauthenticatedRequest(method : String, uri : String) : Option[Future[play.api.mvc.Result]] = {
+    private def unauthenticatedRequest(method: String, uri: String): Option[Future[play.api.mvc.Result]] = {
         return route(FakeRequest(method, uri))
     }
 
-    private def authenticatedRequest(method : String, uri : String, body: JsValue = Json.obj()) : Option[Future[play.api.mvc.Result]] = {
+    private def authenticatedRequest(method: String, uri: String, body: JsValue = Json.obj()) : Option[Future[play.api.mvc.Result]] = {
         return route(FakeRequest(method, uri)
                 .withHeaders("Authorization" -> play.Play.application.configuration.getString("authentication.key"))
                 .withJsonBody(body))

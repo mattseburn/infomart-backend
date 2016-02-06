@@ -6,6 +6,10 @@ import play.api.test._
 import play.api.test.Helpers._
 
 import daos.ArticlesDAO
+import domain.entities.ArticleEntity
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Success, Failure}
 
 /**
  * Add your spec here.
@@ -19,6 +23,10 @@ class ArticlesDAOSpec extends Specification { override def is = s2"""
         """
 
     def create = new WithApplication {
+        val articlesDAO = new ArticlesDAO()
+        articlesDAO.save(new ArticleEntity()) onComplete {
+            case Success(id) => println
+            case Failure(_) => println("database error")
+        }
     }
-
 }
