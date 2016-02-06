@@ -1,6 +1,5 @@
 package daos
 
-import daos.DAO
 import domain.entities.ArticleEntity
 
 import scala.concurrent._

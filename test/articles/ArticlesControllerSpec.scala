@@ -27,28 +27,30 @@ class ArticlesControllerSpec extends Specification { override def is = s2"""
             )
 
         for (request <- requests) {
-            status(unauthenticatedRequest(request._1, request._2)) must equalTo (UNAUTHORIZED)
+            unauthenticatedRequest(request._1, request._2) must beSome.which (status(_) == UNAUTHORIZED)
         }
     }
 
     def creation = new WithApplication {
-        val result = authenticatedRequest(POST, "/articles", Json.obj("title" -> "The Title", "content" -> "The Content"))
-        val json = Json.parse(contentAsString(result))
+        authenticatedRequest(POST, "/articles", Json.obj("title" -> "The Title", "content" -> "The Content")) match {
+            case Some(result) => {
+                val json = Json.parse(contentAsString(result))
 
-        status(result) must equalTo (OK)
-        (json \ "title").as[String] must equalTo("The Title")
-        (json \ "content").as[String] must equalTo("The Content")
+                status(result) must equalTo (OK)
+                (json \ "title").as[String] must equalTo("The Title")
+                (json \ "content").as[String] must equalTo("The Content")
+            }
+            case None => failure("Can't make request.")
+        }
     }
 
-    private def unauthenticatedRequest(method : String, uri : String) : Future[play.api.mvc.Result] = {
-        val Some(result) = route(FakeRequest(method, uri))
-        return result
+    private def unauthenticatedRequest(method : String, uri : String) : Option[Future[play.api.mvc.Result]] = {
+        return route(FakeRequest(method, uri))
     }
 
-    private def authenticatedRequest(method : String, uri : String, body: JsValue = Json.obj()) : Future[play.api.mvc.Result] = {
-        val Some(result) = route(FakeRequest(method, uri)
+    private def authenticatedRequest(method : String, uri : String, body: JsValue = Json.obj()) : Option[Future[play.api.mvc.Result]] = {
+        return route(FakeRequest(method, uri)
                 .withHeaders("Authorization" -> play.Play.application.configuration.getString("authentication.key"))
                 .withJsonBody(body))
-        return result
     }
 }

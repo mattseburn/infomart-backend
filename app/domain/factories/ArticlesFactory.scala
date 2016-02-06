@@ -2,10 +2,10 @@ package domain.factories
 
 import domain.entities.ArticleEntity
 
-class ArticlesFactory() {
+class ArticlesFactory() extends Factory[ArticleEntity] {
     // create new article
 
-    def create(title : String, content : String) : ArticleEntity = {
+    override def build(data : Map[String, String]) : ArticleEntity = {
         return new ArticleEntity()
     }
 }

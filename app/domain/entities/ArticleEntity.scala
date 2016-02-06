@@ -1,4 +1,7 @@
 package domain.entities
 
-class ArticleEntity() {
+class ArticleEntity() extends Entity[ArticleEntity] {
+    def isEqual(other : ArticleEntity) : Boolean = {
+        false
+    }
 }
