@@ -1,5 +1,7 @@
 package daos
 
-class DAO() {
+import scala.concurrent._
 
+trait DAO[T] {
+    def save(article : T) : Future[T]
 }
