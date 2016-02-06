@@ -1,3 +1,4 @@
+import org.specs2.concurrent.ExecutionEnv
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
@@ -8,7 +9,7 @@ import play.api.test.Helpers._
 import daos.ArticlesDAO
 import domain.entities.ArticleEntity
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent._
 import scala.util.{Success, Failure}
 
 /**
@@ -17,16 +18,13 @@ import scala.util.{Success, Failure}
 * For more information, consult the wiki.
 */
 @RunWith(classOf[JUnitRunner])
-class ArticlesDAOSpec extends Specification { override def is = s2"""
+class ArticlesDAOSpec(implicit ee: ExecutionEnv) extends Specification { override def is = s2"""
     The Articles DAO should
         create a new article        $create
         """
 
     def create = new WithApplication {
         val articlesDAO = new ArticlesDAO()
-        articlesDAO.save(new ArticleEntity()) onComplete {
-            case Success(id) => println
-            case Failure(t) => println("database error: " + t.getMessage)
-        }
+        articlesDAO.save(new ArticleEntity()) must beSome.await
     }
 }

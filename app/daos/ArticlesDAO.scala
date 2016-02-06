@@ -18,7 +18,7 @@ class ArticlesDAO() extends DAO[ArticleEntity] {
 
         DB.withConnection { implicit c =>
             SQL"""
-                INSERT INTO $table VALUES ($title, $content)
+                INSERT INTO '$table' (title, content) VALUES ('title', 'content')
                 """.executeInsert()
         }
     }
