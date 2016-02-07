@@ -32,20 +32,19 @@ class ArticlesControllerSpec extends Specification { override def is = s2"""
     }
 
     def creation = new WithApplication {
-        authenticatedRequest(POST, "/articles", Json.obj("title" -> "The Title", "content" -> "The Content")) match {
-            case Some(result) => {
-                val json = Json.parse(contentAsString(result))
-
-                status(result) must equalTo (OK)
-                (json \ "title").as[String] must equalTo("The Title")
-                (json \ "content").as[String] must equalTo("The Content")
-            }
-            case None => failure("Can't make request.")
-        }
+        val result = authenticatedRequest(POST, "/articles", Json.obj("title" -> "The Title", "content" -> "The Content"))
+        result must beSome.which (status(_) == OK)
+        result.foreach(r => {
+            val json = Json.parse(contentAsString(r))
+            json.as[JsObject].keys must contain(eachOf("title", "content", "id"))
+            (json \ "title").as[String] must equalTo("The Title")
+            (json \ "content").as[String] must equalTo("The Content")
+        })
     }
 
     private def unauthenticatedRequest(method: String, uri: String): Option[Future[play.api.mvc.Result]] = {
-        return route(FakeRequest(method, uri))
+        return route(FakeRequest(method, uri)
+                .withJsonBody(Json.obj()))
     }
 
     private def authenticatedRequest(method: String, uri: String, body: JsValue = Json.obj()) : Option[Future[play.api.mvc.Result]] = {

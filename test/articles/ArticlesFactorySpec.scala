@@ -19,9 +19,9 @@ class ArticlesFactorySpec extends Specification { override def is = s2"""
         create a new article        $create
         """
 
-    val articlesFactory = new ArticlesFactory()
+    val factory = new ArticlesFactory()
 
     def create = new WithApplication {
-        articlesFactory.build(Json.obj("title" -> "title", "content" -> "content")) must beSome
+        factory.build(Json.obj("title" -> "title", "content" -> "content")) must beSome
     }
 }

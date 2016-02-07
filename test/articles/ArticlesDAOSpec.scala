@@ -10,7 +10,6 @@ import daos.ArticlesDAO
 import domain.entities.ArticleEntity
 
 import scala.concurrent._
-import scala.util.{Success, Failure}
 
 /**
 * Add your spec here.
@@ -23,9 +22,9 @@ class ArticlesDAOSpec(implicit ee: ExecutionEnv) extends Specification { overrid
         create a new article        $create
         """
 
-    val articlesDAO = new ArticlesDAO()
+    val dao = new ArticlesDAO()
 
     def create = new WithApplication {
-        articlesDAO.save(new ArticleEntity("title", "content", Option(1))) must beSome.await
+        dao.save(new ArticleEntity("title", "content", None)) must beSome.await
     }
 }
