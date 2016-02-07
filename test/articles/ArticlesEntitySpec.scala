@@ -25,5 +25,11 @@ class ArticleEntitySpec extends Specification { override def is = s2"""
 
         article1.isEqual(article2) must beFalse
         article1.isEqual(article1) must beTrue
+
+        val article3 = new ArticleEntity("title", "content", None)
+        val article4 = new ArticleEntity("title", "content", None)
+
+        article3.isEqual(article4) must throwAn[Exception]
+        article3.isEqual(article1) must beFalse
     }
 }
