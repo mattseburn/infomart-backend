@@ -4,6 +4,7 @@ import org.junit.runner._
 
 import play.api.test._
 import play.api.test.Helpers._
+import play.api.libs.json._
 
 import domain.factories.ArticlesFactory
 
@@ -18,8 +19,9 @@ class ArticlesFactorySpec extends Specification { override def is = s2"""
         create a new article        $create
         """
 
-    def create = new WithApplication {
-        val articlesFactory = new ArticlesFactory()
-    }
+    val articlesFactory = new ArticlesFactory()
 
+    def create = new WithApplication {
+        articlesFactory.build(Json.obj("title" -> "title", "content" -> "content"))
+    }
 }

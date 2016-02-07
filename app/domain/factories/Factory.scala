@@ -1,7 +1,7 @@
 package domain.factories
 
-import domain.entities.Entity
+import play.api.libs.json._
 
-trait Factory[T <: Entity[T]] {
-    def build(data : Map[String, String]) : T
+trait Factory[T] {
+    def build(data: JsObject): Option[T]
 }
