@@ -10,15 +10,13 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.Play.current
 
 class ArticlesDAO() extends DAO[ArticleEntity] {
-    val table: String = "articles"
-
     def save(article: ArticleEntity): Future[Option[Long]] = Future {
         val title = article.title
         val content = article.content
 
         DB.withConnection { implicit c =>
             SQL"""
-                INSERT INTO '$table' (title, content) VALUES ('title', 'content')
+                INSERT INTO articles (title, content) VALUES($title, $content)
                 """.executeInsert()
         }
     }
