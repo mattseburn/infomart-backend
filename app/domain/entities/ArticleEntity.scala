@@ -1,8 +1,8 @@
 package domain.entities
 
-class ArticleEntity() extends Entity[ArticleEntity] {
-    val title = "title"
-    val content = "content"
+class ArticleEntity(title_c: String, content_c: String) extends Entity[ArticleEntity] {
+    val title: String = title_c
+    val content: String = content_c
 
     def isEqual(other: ArticleEntity): Boolean = {
         false

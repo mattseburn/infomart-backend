@@ -23,8 +23,9 @@ class ArticlesDAOSpec(implicit ee: ExecutionEnv) extends Specification { overrid
         create a new article        $create
         """
 
+    val articlesDAO = new ArticlesDAO()
+
     def create = new WithApplication {
-        val articlesDAO = new ArticlesDAO()
-        articlesDAO.save(new ArticleEntity()) must beSome.await
+        articlesDAO.save(new ArticleEntity("title", "content")) must beSome.await
     }
 }

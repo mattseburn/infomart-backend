@@ -6,6 +6,6 @@ class ArticlesFactory() extends Factory[ArticleEntity] {
     // create new article
 
     override def build(data : Map[String, String]) : ArticleEntity = {
-        return new ArticleEntity()
+        return new ArticleEntity("title", "content")
     }
 }
