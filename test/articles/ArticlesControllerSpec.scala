@@ -1,5 +1,6 @@
 import org.specs2.mutable._
 import org.specs2.runner._
+import org.specs2.specification.core.Fragments
 import org.junit.runner._
 
 import play.api.test._
@@ -8,17 +9,34 @@ import play.api.mvc._
 import play.api.libs.json._
 import scala.concurrent.Future
 
+trait BeforeAllAfterAll extends Specification {
+    override def map(fragments: => Fragments) =
+        step(before) ^ fragments ^ step(after)
+    protected def before()
+    protected def after()
+}
+
 /**
  * Add your spec here.
  * You can mock out a whole application including requests, plugins etc.
  * For more information, consult the wiki.
  */
 @RunWith(classOf[JUnitRunner])
-class ArticlesControllerSpec extends Specification { override def is = s2"""
+class ArticlesControllerSpec extends Specification with BeforeAllAfterAll { override def is = s2"""
     The Articles controller should
         require authentication on all available routes  $authentication
-        create articles                                 $creation
+        create articles                                 $create
+        list articles                                   $list
         """
+
+
+    def before() {
+        println("setup")
+    }
+
+    def after() {
+        println("teardown")
+    }
 
     def authentication = new WithApplication {
         val requests = Array(
@@ -31,7 +49,7 @@ class ArticlesControllerSpec extends Specification { override def is = s2"""
         }
     }
 
-    def creation = new WithApplication {
+    def create = new WithApplication {
         val result = authenticatedRequest(POST, "/articles", Json.obj("title" -> "The Title", "content" -> "The Content"))
         result must beSome.which (status(_) == OK)
         result.foreach(r => {
@@ -39,6 +57,13 @@ class ArticlesControllerSpec extends Specification { override def is = s2"""
             json.as[JsObject].keys must contain(eachOf("title", "content", "id"))
             (json \ "title").as[String] must equalTo("The Title")
             (json \ "content").as[String] must equalTo("The Content")
+        })
+    }
+
+    def list = new WithApplication {
+        val result = authenticatedRequest(GET, "/articles", Json.obj())
+        result must beSome.which (status(_) == OK)
+        result.foreach(r => {
         })
     }
 
