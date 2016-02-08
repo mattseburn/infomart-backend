@@ -33,8 +33,8 @@ class ArticlesRepositorySpec(implicit ee: ExecutionEnv) extends Specification { 
     def add = new WithApplication {
         // create new article entity
         // add it to repository
-        // verify that id is set
+        // verify that id is returned
 
-        repository.add(new ArticleEntity("title", "content", None)) must beSome[ArticleEntity].which(_.id must beSome).await
+        repository.add(new ArticleEntity("title", "content", None)) must beSome[Long].await
     }
 }

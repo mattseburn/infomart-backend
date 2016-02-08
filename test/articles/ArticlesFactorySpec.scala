@@ -22,6 +22,8 @@ class ArticlesFactorySpec extends Specification { override def is = s2"""
     val factory = new ArticlesFactory()
 
     def create = new WithApplication {
-        factory.build(Json.obj("title" -> "title", "content" -> "content")) must beSome
+        val article = factory.build(Json.obj("title" -> "title", "content" -> "content"))
+        article.title must beEqualTo("title")
+        article.content must beEqualTo("content")
     }
 }
