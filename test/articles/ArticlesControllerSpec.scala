@@ -9,34 +9,19 @@ import play.api.mvc._
 import play.api.libs.json._
 import scala.concurrent.Future
 
-trait BeforeAllAfterAll extends Specification {
-    override def map(fragments: => Fragments) =
-        step(before) ^ fragments ^ step(after)
-    protected def before()
-    protected def after()
-}
-
 /**
  * Add your spec here.
  * You can mock out a whole application including requests, plugins etc.
  * For more information, consult the wiki.
  */
 @RunWith(classOf[JUnitRunner])
-class ArticlesControllerSpec extends Specification with BeforeAllAfterAll { override def is = s2"""
+class ArticlesControllerSpec extends Specification { override def is = s2"""
     The Articles controller should
         require authentication on all available routes  $authentication
         create articles                                 $create
         list articles                                   $list
         """
 
-
-    def before() {
-        println("setup")
-    }
-
-    def after() {
-        println("teardown")
-    }
 
     def authentication = new WithApplication {
         val requests = Array(
