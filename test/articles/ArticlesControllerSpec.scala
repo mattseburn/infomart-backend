@@ -48,7 +48,8 @@ class ArticlesControllerSpec extends Specification { override def is = s2"""
     def list = new WithApplication {
         val result = authenticatedRequest(GET, "/articles", Json.obj())
         result must beSome.which (status(_) == OK)
-        result.foreach(r => {
+        result.map(r => {
+            val json = Json.parse(contentAsString(r))
         })
     }
 

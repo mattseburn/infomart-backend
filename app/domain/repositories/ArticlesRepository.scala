@@ -15,4 +15,8 @@ class ArticlesRepository() extends Repository[ArticleEntity] {
         // add article to db
         dao.save(article)
     }
+
+    override def retrieve(): Future[Option[List[ArticleEntity]]] = {
+        dao.get()
+    }
 }

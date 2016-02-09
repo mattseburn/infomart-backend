@@ -8,6 +8,7 @@ import play.api.libs.json._
 
 import actions.Authenticated
 
+import domain.entities.ArticleEntity
 import domain.factories.ArticlesFactory
 import domain.repositories.ArticlesRepository
 
@@ -17,8 +18,23 @@ class Articles extends Controller {
     val factory = new ArticlesFactory()
     val repository = new ArticlesRepository()
 
-    def index = Authenticated {
-        Ok("list articles")
+    private def toJson(articles: Option[List[ArticleEntity]]): JsArray = {
+        articles match {
+            case Some(a) => {
+                var json = Json.arr()
+                for (article <- a) {
+                    json = json :+ (article.toJson())
+                }
+                json
+            }
+            case None => {
+                Json.arr()
+            }
+        }
+    }
+
+    def index = Authenticated.async { request =>
+        repository.retrieve().map {o => Ok(toJson(o))}
     }
 
     def create = Authenticated.async(parse.json) { request =>

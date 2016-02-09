@@ -26,6 +26,7 @@ import scala.concurrent.duration.Duration
 class ArticlesRepositorySpec(implicit ee: ExecutionEnv) extends Specification { override def is = s2"""
     The Articles repository should
         add a new article        $add
+        retrieve articles        $retrieve
         """
 
     val repository = new ArticlesRepository()
@@ -36,5 +37,9 @@ class ArticlesRepositorySpec(implicit ee: ExecutionEnv) extends Specification { 
         // verify that id is returned
 
         repository.add(new ArticleEntity("title", "content", None)) must beSome[Long].await
+    }
+
+    def retrieve = new WithApplication {
+        repository.retrieve() must beSome[List[ArticleEntity]].await
     }
 }

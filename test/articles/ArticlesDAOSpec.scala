@@ -20,11 +20,17 @@ import scala.concurrent._
 class ArticlesDAOSpec(implicit ee: ExecutionEnv) extends Specification { override def is = s2"""
     The Articles DAO should
         create a new article        $create
+        get articles                $get
         """
 
     val dao = new ArticlesDAO()
 
     def create = new WithApplication {
         dao.save(new ArticleEntity("title", "content", None)) must beSome.await
+    }
+
+    def get = new WithApplication {
+        // I would normally have test data to test this against
+        dao.get() must beSome.await
     }
 }
